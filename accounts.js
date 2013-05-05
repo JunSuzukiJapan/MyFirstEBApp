@@ -9,7 +9,7 @@ function createConnection(){
     user     : process.env.RDS_USERNAME,
     password : process.env.RDS_PASSWORD,
     port     : process.env.RDS_PORT,
-    database : 'MyApp'  // <- MySQLで作成したテーブル名
+    database : 'ebdb'  // Elastic Beanstalk用RDSの詳細画面にある"DB Name:"の名前
   });
 };
 
