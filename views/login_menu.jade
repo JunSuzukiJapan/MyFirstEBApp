@@ -1,0 +1,8 @@
+ul.nav
+  li
+    if user != null
+      a(href="logout")
+        | Logout
+    else
+      a(href="login")
+        | Login

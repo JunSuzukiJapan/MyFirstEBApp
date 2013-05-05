@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  div.container
+    if message != null
+      div
+        h3
+          font(color='#ff0000') #{message}
+
+    form.form-horizontal(action="/login", method="post")
+      div.control-group
+        label.control-label Username:
+        div.controls
+          input(type="text", name="username", id="username")
+      div.control-group
+        label.control-label Password:
+        div.controls
+          input(type="password", name="password", id="password")
+      div
+        div.controls
+          input.btn(type="submit", value="Log in")

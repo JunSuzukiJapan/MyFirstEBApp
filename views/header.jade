@@ -1,0 +1,19 @@
+div.navbar.navbar-fixed-top
+    div.navbar-inner
+        div.container
+            a.btn.btn-navbar(data-toggle="collapse", data-target=".nav-collapse")
+                span.icon-bar
+                span.icon-bar
+                span.icon-bar
+            a.brand(href="#")
+                | Home
+            div.nav-collapse.collapse
+                ul.nav.pull-right
+                  if user != null
+                    ul.nav
+                      li
+                        a(href="logout") Log out
+                  else
+                    ul.nav
+                      a.btn(href="signup") Sign up
+                    include login_menu

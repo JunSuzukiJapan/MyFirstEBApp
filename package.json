@@ -7,6 +7,10 @@
   },
   "dependencies": {
     "express": "3.2.0",
-    "jade": "*"
+    "jade": "*",
+    "mysql": "*",
+    "connect-flash": "*",
+    "passport": "*",
+    "passport-local": "*"    
   }
 }

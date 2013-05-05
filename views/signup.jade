@@ -1,0 +1,134 @@
+extends layout
+
+block content
+  script(src="/javascripts/des.js", type="text/javascript")
+
+  div.container
+    div(id="ErrorMessage")
+
+    form.form-horizontal(action="/signup", method="post", name="form1", onSubmit="return checkForm()")
+      div.control-group(id="username-group")
+        label.control-label Username:
+        div.controls
+          input(type="text", name="username", id="username")
+      div.control-group(id="password-group")
+        label.control-label Password:
+        div.controls
+          input(type="password", name="password", id="password")
+      div.control-group(id="email-group")
+        label.control-label E-Mail:
+        div.controls
+          input(type="text", name="email", id="email")
+      div.control-group
+        label.control-label Sex:
+        div.controls
+          label.radio
+            input(type="radio", name="sex", value="male", id="radio_male")
+            label Male
+          label.radio
+            input(type="radio", name="sex", value="female", id="radio_female")
+            label Female
+          label.radio
+            input(type="radio", name="sex", value="other", id="radio_other", checked)
+            label Other
+      div.control-group
+        label.control-label Comment:
+        div.controls
+          textarea(name="description", id="description", class="span5", rows="5")
+      div
+        div.controls
+          input.btn(type="submit", value="Sign up", id="submit") Submit
+
+  script
+    function chkRegEmail(str){
+        var Seiki=/[!#-9A-~]+@+[a-z0-9]+.+[^.]$/i;
+        if(str!=""){
+            if(str.match(Seiki)){
+                return true;
+            }else{
+                alert("Illegal E-Mail address.");
+                return false;
+            }
+        }else{
+            alert("Please input E-Mail address.");
+            return false;
+        }
+    }
+
+    function isRegAlphaNum(str){
+        var tmp=str.match(/[0-9a-zA-Z\-\.]+/g);
+        console.log('isRegAlphaNum' + tmp);
+        if (tmp!=str){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    function isRegHan(str){
+        //var tmp=str.match(/[0-9a-zA-Z\+\-\/\*\,\. ]+/g);
+        var tmp=str.match(/[0-9a-zA-Z\+\-\/\*\,\.]+/g);
+        console.log('isRegHan' + tmp);
+        if (tmp!=str){
+            return false;
+        }else{
+            console.log('true password');
+            return true;
+        }
+    }
+
+    function chkUsername(str){
+      if(str!=""){
+        if(isRegAlphaNum(str)){
+          console.log('success');
+          return true;
+        }else{
+          alert('Illegal character in username.');
+          return false;
+        }
+
+      }else{
+        alert("Please input username.")
+        return false;
+      }
+    }
+
+    function chkPassword(str){
+      if(str!=""){
+        if(isRegHan(str)){
+          return true;
+        }else{
+          alert('Illegal character in password.');
+          return false;
+        }
+
+      }else{
+        alert("Please input password.")
+        return false;
+      }
+    }
+
+    function checkForm(){
+      console.log('checkForm');
+      $('form1').removeClass('warning');
+      var str = $('#username').val();
+      if( ! chkUsername(str) ){
+        $('#username-group').addClass('warning');
+        $('#username').focus();
+        return false;
+      }
+      var password = $('#pass').val();
+      if( ! chkPassword(password) ){
+        $('#password-group').addClass('warning');
+        $('#pass').focus();
+        return false;
+      }
+      str = $('#email').val();
+      if(! chkRegEmail(str)){
+        $('#email-group').addClass('warning');
+        $('#email').focus();
+        return false;
+      }
+
+      return true;
+    }

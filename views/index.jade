@@ -1,5 +1,12 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  div.container
+    if user != null
+      h2 Hello, #{user.username}.
+    else
+      h2 Welcome to #{title}!
+      h3 Please 
+        a(href="/login") log in,
+        div or
+          a(href="/signup")  sign up.
