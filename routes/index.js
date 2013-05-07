@@ -4,6 +4,7 @@
  */
 
 exports.index = function(req, res){
+	console.log('call index');
   res.render('index', { title: 'Home', user: req.user });
 };
 

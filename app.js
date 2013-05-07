@@ -100,8 +100,15 @@ app.get('/logout', function(req, res){
 
 app.post('/signup', function(req, res){
   accounts.signup(req, res, function(){
-    passport.authenticate('local', { failureRedirect: '/signup', successRedirect: '/', failureFlash: true });
-    res.redirect('/');
+    //passport.authenticate('local', { failureRedirect: '/signup', successRedirect: '/', failureFlash: true });
+    passport.authenticate('local', function(err, user, info) {
+      if (err) { return next(err); }
+      if (!user) { return res.redirect('/signup'); }
+      req.logIn(user, function(err) {
+        if (err) { return next(err); }
+        return res.redirect('/');
+      });
+    })(req, res, function(){res.redirect('/signup')});
   });
 });
 

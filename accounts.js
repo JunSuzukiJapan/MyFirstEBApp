@@ -14,6 +14,7 @@ function createConnection(){
 };
 
 function createAccountWithTransaction(connection, username, password, email, sex, description, callback){
+  console.log('start transaction');
   var query = 'start transaction';
   connection.query(query, function(err, result){
     if(err){
@@ -23,27 +24,39 @@ function createAccountWithTransaction(connection, username, password, email, sex
       return;
     }
 
-    // 使われていないIDを計算。
-    query = 'select max(ID) as solution from ACCOUNTS';
-    connection.query(query, function(err, rows, fields){
+    console.log('inserting profile...');
+    query = "insert into PROFILES (EMAIL, SEX, DESCRIPTION) values (?, ?, ?)";
+    connection.query(query, [email, sex, description], function(err, result){
       if(err){
-        // max(ID)の取得に失敗。
-        console.log('cannot select max(ID)');
+        // プロフィールの登録に失敗。
+        console.log('cannot insert profile');
+        console.log(err);
         callback(err);
-        return;
+        return;  
       }
-      var id = rows[0].solution + 1;
-      console.log('max id + 1 = ' + id);
+      console.log('profile inserted.');
 
-      console.log('inserting profile...');
-      query = "insert into PROFILES (ID, EMAIL, SEX, DESCRIPTION) values (?, ?, ?, ?)";
-      connection.query(query, [id, email, sex, description], function(err, result){
+      query = 'select last_insert_id() as solution from PROFILES';
+      connection.query(query, function(err, rows, fields){
         if(err){
-          // プロフィールの登録に失敗。
-          callback(err);
-          return;  
+          // max(ID)の取得に失敗。
+          console.log('cannot select last_insert_id as solution from PROFILES');
+          // アカウントの登録に失敗。ロールバックする。
+          query = 'rollback';
+          connection.query(query, function(e){
+            if(e){
+              // rollbackに失敗した旨をコールバックで伝達
+              callback(e);
+            }else{
+              // アカウントの登録に失敗したことをコールバックで伝達
+              callback(err);
+            }
+          });
+          return;
         }
-        console.log('profile inserted.');
+        //var id = rows[0].solution + 1;
+        var id = rows[0].solution;
+        console.log('last_insert_id = ' + id);
 
         console.log('inserting account...');
         query = "insert into ACCOUNTS (ID, USERNAME, PASSWORD, PROFILEID, CREATED) values (?, ?, ?, ?, now())";
@@ -78,6 +91,7 @@ function createAccountWithTransaction(connection, username, password, email, sex
     });
   });
 }
+
 
 /*
  * method query
@@ -197,7 +211,8 @@ exports.signup = function signup(req, res, callback){
 
     createAccount(username, password, email, sex, description, function(err){
       if(err) throw err;
+      console.log('callback in signup')
+      callback(req, res, null);
     });
-    callback(null);
   }
 };
